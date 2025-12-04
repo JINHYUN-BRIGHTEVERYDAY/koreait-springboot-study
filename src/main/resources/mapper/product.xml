@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.korit.springboot.mapper.ProductMapper">
+
+    <!-- 오버라이딩의 역할  -->
+    <insert id="insert">
+        insert into product_tb
+        <!-- default : autoIncrement의 역할 -->
+        values (default, #{product_name}, #{product_size}, #{product_price})
+    </insert>
+
+    <!--    resultType 생략-->
+    <select id="productList">
+        select
+            name
+        from
+            product_tb
+    </select>
+
+</mapper>
