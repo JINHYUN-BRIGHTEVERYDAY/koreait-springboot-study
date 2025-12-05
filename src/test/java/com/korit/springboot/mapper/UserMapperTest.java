@@ -1,22 +1,23 @@
-package com.korit.springboot;
+package com.korit.springboot.mapper;
 
 import com.korit.springboot.entity.UserEntity;
-import com.korit.springboot.mapper.UserMapper;
-import jakarta.xml.bind.SchemaOutputResolver;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springdoc.core.utils.SchemaUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
-class SpringbootApplicationTests {
+@Transactional
+public class UserMapperTest {
 
     @Autowired
     private UserMapper userMapper;
 
     @Test
     void insertTest() {
-        UserEntity userEntity = UserEntity
-                .builder()
+        UserEntity userEntity = UserEntity.builder()
                 .username("test")
                 .password("1234")
                 .name("오진현")
@@ -25,10 +26,13 @@ class SpringbootApplicationTests {
 
         int successCount = userMapper.insert(userEntity);
         System.out.println(successCount);
+        Assertions.assertThat(successCount).isEqualTo(1);
     }
 
     @Test
-    void contextLoads() {
+    void findUserByUsernameTest() {
+        UserEntity foundUser = userMapper.findUserByUsername("test1234");
+        System.out.println(foundUser);
     }
 
 }

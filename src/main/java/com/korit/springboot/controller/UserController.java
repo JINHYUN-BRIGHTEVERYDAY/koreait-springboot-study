@@ -1,53 +1,31 @@
 package com.korit.springboot.controller;
 
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpStatus;
+import com.korit.springboot.dto.CreateUserReqDto;
+import com.korit.springboot.service.UserService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-// 1.
-// RestController -> 데이터 응답만 담당 (데이터 요청과 응답을 처리)
-/*
-* RestfulAPI -> 뷰는 없다
-* 컨트롤러 다음에 레이어 -> 서비스 -> 레퍼지토리 -> 데이터베이스
-*
-*
-* */
+@RequiredArgsConstructor
 @RestController
 public class UserController {
 
-    private String username = "test12";
-    private String password = "1234";
-
-    // 서블릿의 doGet -> 하나만 가능
-    // 클래스 안에 메서드로 -> 여러 개 가능
-    @GetMapping("/info")
-    public ResponseEntity<String> printInfo() {
-        return ResponseEntity.ok("UserController!!!");
-    }
+    private final UserService userService;
 
 
-    // url을 따로따로 하지 말고
-//    @GetMapping("/users")
-//    public Map<String, String> getUsers(HttpServletResponse response) {
-//        // JSON 형태로 요청하지 않았지만 JSON으로 응답이 오도록
-//        response.setStatus(400);
-//        response.setContentType("applicaion/json");
-//        return Map.of("username", username , "password", password);
-//    }
+    @PostMapping("/api/users")
+    public ResponseEntity<Map<String, Integer>> create(@Valid @RequestBody CreateUserReqDto createUserReqDto) throws MethodArgumentNotValidException {
+        // @Valid 검증은 Controller 메서드에 `@Valid` 어노테이션이 있어야 작동합니다.
+        // 현재 코드에는 `@Valid`가 빠져 있으니 아래처럼 추가하는 것을 권장합니다.
+        // public ResponseEntity<?> create(@RequestBody @Valid CreateUserReqDto createUserReqDto) { ... }
 
-
-    // url을 따로따로 하지 말고
-    @GetMapping("/users")
-    public ResponseEntity<Map<String, String>> getUsers(HttpServletResponse response) {
-        // JSON 형태로 요청하지 않았지만 JSON으로 응답이 오도록
-//        response.setStatus(400);
-//        response.setContentType("applicaion/json");
-        return ResponseEntity.status(HttpStatus.OK).body(Map.of("username", username , "password", password));
+        userService.duplicatedUsername(createUserReqDto.getUsername());
+        int createdUserId = userService.createUser(createUserReqDto);
+//        userService.createUser(createUserReqDto);
+        return ResponseEntity.ok(Map.of("cretedUserId", createdUserId));
     }
 }
