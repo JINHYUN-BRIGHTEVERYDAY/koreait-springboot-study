@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ValidErrorResponseDto {
+public class ValidErrorRespDto {
     private final String fieldName;
     private final String message;
 }

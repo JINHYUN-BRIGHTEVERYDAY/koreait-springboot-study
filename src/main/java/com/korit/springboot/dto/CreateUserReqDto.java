@@ -21,7 +21,7 @@ public class CreateUserReqDto {
     @NotBlank
     private String email;
 
-    public UserEntity userEntity() {
+    public UserEntity toEntity() {
         return UserEntity.builder()
                 .username(username)
                 .password(password)

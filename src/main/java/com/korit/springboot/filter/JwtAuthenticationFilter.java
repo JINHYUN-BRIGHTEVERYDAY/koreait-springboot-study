@@ -15,11 +15,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        // 데이터 토큰이 유효한지에 대한 검사
 
 
         filterChain.doFilter(request, response);
-
     }
 
 }
