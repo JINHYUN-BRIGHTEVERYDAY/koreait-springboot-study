@@ -12,5 +12,5 @@ public interface UserMapper {
     UserEntity findUserByUsername(@Param("username") String username);
 
     // userId로 찾기
-    UserEntity findUserById(@Param("userId") int userId);
+    UserEntity findUserByUserId(@Param("userId") int userId);
 }

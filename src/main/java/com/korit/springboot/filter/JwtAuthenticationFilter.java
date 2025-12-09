@@ -3,16 +3,23 @@ package com.korit.springboot.filter;
 import com.korit.springboot.entity.UserEntity;
 import com.korit.springboot.jwt.JwtTokenProvider;
 import com.korit.springboot.mapper.UserMapper;
+import com.korit.springboot.security.PrincipalUser;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
 
 @Component
 @RequiredArgsConstructor
@@ -45,7 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // 토큰이 유효한 경우
         int userId = jwtTokenProvider.getuserId(accessToken);
-        UserEntity foundUser = userMapper.findUserById(userId);
+        UserEntity foundUser = userMapper.findUserByUserId(userId);
 
 
         if (foundUser == null) {
@@ -53,9 +60,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
+        System.out.println(foundUser);
 
         // 권한 부여하기
-        SecurityContextHolder.getContext().setAuthentication(null);
+        PrincipalUser principalUser = new PrincipalUser(foundUser);
+        String password = "";
+        Collection<? extends GrantedAuthority> authorities = principalUser.getAuthorities();
+
+        UsernamePasswordAuthenticationToken authentication
+                = new UsernamePasswordAuthenticationToken(principalUser, password, authorities);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
 
         // 다음 필터 -> 인증 처리
