@@ -3,6 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+
 <mapper namespace="com.korit.springboot.mapper.UserMapper">
     <resultMap id="userEntity" type="com.korit.springboot.entity.UserEntity">
         <id property="userId" column="user_id" />
@@ -12,11 +13,13 @@
         <result property="email" column="email" />
     </resultMap>
 
+
     <!-- insert문 추가 -->
     <insert id="insert" useGeneratedKeys="true" keyProperty="userId">
         insert into user_tb
         values(default, #{username}, #{password}, #{name}, #{email})
     </insert>
+
 
     <select id="findUserByUsername" resultType="userEntity">
         select
@@ -30,5 +33,20 @@
         where
             username = #{username}
     </select>
+
+
+    <select id="findUserByUserId" resultType="userEntity">
+        select
+            user_id,
+            username,
+            password,
+            name,
+            email
+        from
+            user_tb
+        where
+            user_id = #{userId}
+    </select>
+
 
 </mapper>

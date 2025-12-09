@@ -3,6 +3,7 @@ package com.korit.springboot.service;
 import com.korit.springboot.dto.SigninReqDto;
 import com.korit.springboot.dto.SignupReqDto;
 import com.korit.springboot.entity.UserEntity;
+import com.korit.springboot.jwt.JwtTokenProvider;
 import com.korit.springboot.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -17,6 +18,7 @@ public class AuthService {
 
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public void signup(SignupReqDto dto) {
         UserEntity userEntity = dto.toEntity(passwordEncoder);
@@ -35,7 +37,7 @@ public class AuthService {
             throw new BadCredentialsException(defaultMessage);
         }
         //토큰 생성
-        final String accessToken = "정상 로그인으로 생성된 JWT 토큰";
+        final String accessToken = jwtTokenProvider.createAccessToken(foundUser);
 
         return accessToken;
     }
