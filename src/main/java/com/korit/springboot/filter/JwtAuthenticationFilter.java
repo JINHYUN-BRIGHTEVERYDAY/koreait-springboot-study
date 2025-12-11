@@ -42,8 +42,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // 정상적인 토큰인 경우
         String accessToken = bearerToken.replaceAll("Bearer ", "");
-
-
         // 유효하지 않은 토큰의 경우 다음 필터로 넘겨버리기
         if (!jwtTokenProvider.validateToken(accessToken)) {
             filterChain.doFilter(request, response);
@@ -70,7 +68,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         UsernamePasswordAuthenticationToken authentication
                 = new UsernamePasswordAuthenticationToken(principalUser, password, authorities);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
 
         // 다음 필터 -> 인증 처리
         filterChain.doFilter(request, response);
